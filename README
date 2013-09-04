@@ -4,7 +4,8 @@ Copyright (c) 2013  Scott C. Livingston
 Available at https://github.com/slivingston/ltl2gba
 
 A new version sequence has begun to avoid confusion with the original LTL2BA.
-It is of the form 1.2-scl
+It is of the form 1.2-scl.  Consult the last section of this README
+file for a list of changes.
 
 
 1. LICENSE
@@ -73,7 +74,7 @@ compile the program
 3. EXECUTING
 
 run the program
-> ./ltl2ba -f "formula"
+> ./ltl2gba -f "formula"
 
 The formula is an LTL formula, and may contain propositional symbols, 
 boolean operators, temporal operators, and parentheses.
@@ -99,11 +100,12 @@ Temporal operators:
 
 Use spaces between any symbols.
 
-The result is a never claim in Promela that can be given to the
-Spin model checker to verify properties on a system.
+The result is a never claim in Promela that can be given to the Spin
+model checker to verify properties on a system.  Other output formats
+are available; consult the last section of this README file.
 
 run the command
-> ./ltl2ba
+> ./ltl2gba -h
 to see the possible options for executing the program
 
 4. CHANGES IN VERSION 1.1
@@ -114,3 +116,11 @@ to see the possible options for executing the program
 - using getrusage to compute running times for the statistics
 - some other minor updates.
 
+5. CHANGES IN VERSION 1.2-scl
+
+- add "-t TYPE" flag for selection of output formats besides Promela
+  never claims.  By default the final nondeterministic Buechi
+  automaton is dumped in the requested format.  Possible formats are
+  - spin: (default), never claim as in previous versions;
+  - dot: Graphviz DOT (http://graphviz.org/);
+  - gexf: Gephi GEXF (http://gexf.net/format/).
