@@ -601,6 +601,71 @@ void print_dot_buchi()
 }
 
 
+void print_gexf_buchi()
+{
+	BState *s, *next_s;
+	BTrans *t;
+	unsigned int node_count, next_node_count, edge_count;
+
+	fprintf( tl_out, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gexf xmlns=\"http://www.gexf.net/1.2draft\" version=\"1.2\">\n  <graph mode=\"static\" defaultedgetype=\"directed\">\n" );
+	fprintf( tl_out, "    <!-- " );
+	put_uform();
+	fprintf( tl_out, " -->\n" );
+
+	fprintf( tl_out, "    <attributes class=\"edge\" mode=\"static\">\n" );
+	fprintf( tl_out, "      <attribute id=\"0\" title=\"condition\" type=\"string\" />\n" );
+	fprintf( tl_out, "    </attributes>\n" );
+
+	fprintf( tl_out, "    <nodes>\n" );
+	node_count = 0;
+	for (s = bstates->nxt; s != bstates; s = s->nxt) {
+		fprintf( tl_out, "      <node id=\"%i\" label=\"", node_count );
+		if (s->final == accept) {
+			fprintf( tl_out, "accept_" );
+		} else {
+			fprintf( tl_out, "T%i_", s->final );
+		}
+		if (s->id == -1) {
+			fprintf( tl_out, "init" );
+		} else {
+			fprintf( tl_out, "S%i", s->id );
+		}
+		fprintf( tl_out, "\" />\n" );
+		node_count++;
+	}
+
+	fprintf( tl_out, "    </nodes>\n    <edges>\n" );
+
+	node_count = 0;
+	edge_count = 0;
+	for (s = bstates->nxt; s != bstates; s = s->nxt) {
+		for (t = s->trans->nxt; t != s->trans; t = t->nxt) {
+			next_node_count = 0;
+			for (next_s = bstates->nxt; next_s != t->to; next_s = next_s->nxt)
+				next_node_count++;
+			fprintf( tl_out, "      <edge id=\"%i\" source=\"%i\" target=\"%i\">\n", edge_count, node_count, next_node_count );
+			fprintf( tl_out, "        <attvalues>\n" );
+			fprintf( tl_out, "          <attvalue for=\"0\" value=\"(" );
+			spin_print_set(t->pos, t->neg);
+			while (t->nxt != s->trans && t->nxt->to->id == t->to->id && t->nxt->to->final == t->to->final) {
+				fprintf( tl_out, ") || (" );
+				spin_print_set(t->nxt->pos, t->nxt->neg);
+				t = t->nxt;
+			}
+			fprintf( tl_out, ")\" />\n" );
+
+			fprintf( tl_out, "        </attvalues>\n" );
+			fprintf( tl_out, "      </edge>\n" );
+			edge_count++;
+		}
+		node_count++;
+	}
+	fprintf( tl_out, "    </edges>\n" );
+
+	fprintf( tl_out, "  </graph>\n</gexf>\n" );
+}
+
+
 /********************************************************************\
 |*                       Main method                                *|
 \********************************************************************/
@@ -715,7 +780,9 @@ void mk_buchi()
 
   if (output_format == OUT_TYPE_SPIN) {
 	  print_spin_buchi();
-  } else { /* output_format == OUT_TYPE_DOT */
+  } else if (output_format == OUT_TYPE_DOT) {
 	  print_dot_buchi();
+  } else { /* output_format == OUT_TYPE_GEXF */
+	  print_gexf_buchi();
   }
 }

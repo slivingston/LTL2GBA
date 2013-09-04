@@ -122,7 +122,7 @@ usage(void)
         printf("                   or -F file\n");
 		printf(" -h\t\tthis help message\n");
 		printf(" -V\t\tprint version and exit\n");
-		printf(" -t type\toutput format; default is \"spin\"; can be one of the following:\n\t\tspin, dot\n");
+		printf(" -t type\toutput format; default is \"spin\"; can be one of the following:\n\t\tspin, dot, gexf\n");
         printf(" -f \"formula\"\ttranslate LTL ");
         printf("into never claim\n");
         printf(" -F file\tlike -f, but with the LTL ");
@@ -197,6 +197,8 @@ main(int argc, char *argv[])
 						output_format = OUT_TYPE_SPIN;
 					} else if (!strncmp( argv[1], "dot", 3 )) {
 						output_format = OUT_TYPE_DOT;
+					} else if (!strncmp( argv[1], "gexf", 4 )) {
+						output_format = OUT_TYPE_GEXF;
 					} else {
 						fprintf( stderr, "Incorrect use of \"-t\" flag.  Try \"-h\".\n" );
 						return 1;

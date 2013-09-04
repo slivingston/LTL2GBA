@@ -255,6 +255,7 @@ typedef Node	*Nodeptr;
 
 #define OUT_TYPE_SPIN 0
 #define OUT_TYPE_DOT 1
+#define OUT_TYPE_GEXF 2
 
 typedef unsigned char byte;
 
