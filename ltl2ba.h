@@ -4,6 +4,8 @@
 /* Copyright (c) 2001  Denis Oddoux                                       */
 /* Modified by Paul Gastin, LSV, France                                   */
 /* Copyright (c) 2007  Paul Gastin                                        */
+/* Modified by Scott C. Livingston, Caltech, USA                          */
+/* Copyright (c) 2013 Scott C. Livingston                                 */
 /*                                                                        */
 /* This program is free software; you can redistribute it and/or modify   */
 /* it under the terms of the GNU General Public License as published by   */
@@ -29,6 +31,9 @@
 /*                                                                        */
 /* Some of the code in this file was taken from the Spin software         */
 /* Written by Gerard J. Holzmann, Bell Laboratories, U.S.A.               */
+#ifndef LTL2BA_H
+#define LTL2BA_H
+
 
 #include <stdio.h>
 #include <string.h>
@@ -246,3 +251,12 @@ typedef Node	*Nodeptr;
 #define Assert(x, y)	{ if (!(x)) { tl_explain(y); \
 			  Fatal(": assertion failed\n",(char *)0); } }
 #define min(x,y)        ((x<y)?x:y)
+
+
+#define OUT_TYPE_SPIN 0
+#define OUT_TYPE_DOT 1
+
+typedef unsigned char byte;
+
+
+#endif

@@ -1,5 +1,8 @@
-# LTL2BA - Version 1.0 - October 2001
+# ltl2gba - forked from LTL2BA in September 2013.  (See original comments below.)
+#
+# SCL; 3 Sep 2013.
 
+# LTL2BA - Version 1.0 - October 2001
 # Written by Denis Oddoux, LIAFA, France                                 
 # Copyright (c) 2001  Denis Oddoux                                       
 #                                                                        
@@ -28,15 +31,14 @@
 #       FRANCE                                                               
 
 CC=gcc
-CFLAGS= -O3 -ansi -DNXT
+CFLAGS= -O3 -ansi -pedantic -DNXT
 
-LTL2BA=	parse.o lex.o main.o trans.o buchi.o set.o \
-	mem.o rewrt.o cache.o alternating.o generalized.o
+LTL2GBA= parse.o lex.o main.o trans.o buchi.o set.o mem.o rewrt.o cache.o alternating.o generalized.o
 
-ltl2ba:	$(LTL2BA)
-	$(CC) $(CFLAGS) -o ltl2ba $(LTL2BA)
+ltl2gba: $(LTL2GBA)
+	$(CC) $(CFLAGS) -o ltl2gba $(LTL2GBA)
 
-$(LTL2BA): ltl2ba.h
+$(LTL2GBA): ltl2ba.h
 
 clean:
-	rm -f ltl2ba *.o core
+	rm -f ltl2gba *.o core

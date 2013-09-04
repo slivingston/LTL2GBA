@@ -1,3 +1,12 @@
+LTL2BA - Forked and, to distinguish from the original, referred to as ltl2gba.
+Modified by Scott C. Livingston, Caltech, USA.
+Copyright (c) 2013  Scott C. Livingston
+Available at https://github.com/slivingston/ltl2gba
+
+A new version sequence has begun to avoid confusion with the original LTL2BA.
+It is of the form 1.2-scl
+
+
 1. LICENSE
 
 LTL2BA - Version 1.0 - October 2001

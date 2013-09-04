@@ -4,6 +4,8 @@
 /* Copyright (c) 2001  Denis Oddoux                                       */
 /* Modified by Paul Gastin, LSV, France                                   */
 /* Copyright (c) 2007  Paul Gastin                                        */
+/* Modified by Scott C. Livingston, Caltech, USA                          */
+/* Copyright (c) 2013 Scott C. Livingston                                 */
 /*                                                                        */
 /* This program is free software; you can redistribute it and/or modify   */
 /* it under the terms of the GNU General Public License as published by   */
@@ -40,6 +42,7 @@ extern int tl_verbose, tl_stats, tl_simp_diff, tl_simp_fly, tl_simp_scc,
   init_size, *final;
 extern void put_uform(void);
 
+extern byte output_format;
 extern FILE *tl_out;	
 BState *bstack, *bstates, *bremoved;
 BScc *scc_stack;
@@ -537,6 +540,67 @@ void print_spin_buchi() {
   fprintf(tl_out, "}\n");
 }
 
+
+void print_dot_buchi()
+{
+	BState *s;
+	BTrans *t;
+
+	fprintf( tl_out, "digraph A { /* " );
+	put_uform();
+	fprintf( tl_out, " */\n" );
+
+	for (s = bstates->nxt; s != bstates; s = s->nxt) {
+		if (s->final == accept) {
+			if (s->id == -1) {
+				fprintf( tl_out, "\"accept_init\"" );
+			} else {
+				fprintf( tl_out, "\"accept_S%i\"", s->id );
+			}
+			fprintf( tl_out, " [peripheries=2]\n" );
+		}
+		for (t = s->trans->nxt; t != s->trans; t = t->nxt) {
+			fprintf( tl_out, "    \"" );
+			if (s->final == accept) {
+				fprintf( tl_out, "accept_" );
+			} else {
+				fprintf( tl_out, "T%i_", s->final );
+			}
+			if (s->id == -1) {
+				fprintf( tl_out, "init" );
+			} else {
+				fprintf( tl_out, "S%i", s->id );
+			}
+			fprintf( tl_out, "\"" );
+
+			fprintf( tl_out, " -> " );
+
+			fprintf( tl_out, "\"" );
+			if (t->to->final == accept) {
+				fprintf( tl_out, "accept_" );
+			} else {
+				fprintf( tl_out, "T%i_", t->to->final );
+			}
+			if (t->to->id == -1) {
+				fprintf( tl_out, "init" );
+			} else {
+				fprintf( tl_out, "S%i", t->to->id );
+			}
+			fprintf( tl_out, "\" [label=\"(" );
+			spin_print_set(t->pos, t->neg);
+			while (t->nxt != s->trans && t->nxt->to->id == t->to->id && t->nxt->to->final == t->to->final) {
+				fprintf( tl_out, ") || (" );
+				spin_print_set(t->nxt->pos, t->nxt->neg);
+				t = t->nxt;
+			}
+			fprintf( tl_out, ")\"]\n" );
+		}
+	}
+
+	fprintf( tl_out, "}\n" );
+}
+
+
 /********************************************************************\
 |*                       Main method                                *|
 \********************************************************************/
@@ -649,5 +713,9 @@ void mk_buchi()
     }
   }
 
-  print_spin_buchi();
+  if (output_format == OUT_TYPE_SPIN) {
+	  print_spin_buchi();
+  } else { /* output_format == OUT_TYPE_DOT */
+	  print_dot_buchi();
+  }
 }

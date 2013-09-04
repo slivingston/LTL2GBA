@@ -4,6 +4,8 @@
 /* Copyright (c) 2001  Denis Oddoux                                       */
 /* Modified by Paul Gastin, LSV, France                                   */
 /* Copyright (c) 2007  Paul Gastin                                        */
+/* Modified by Scott C. Livingston, Caltech, USA                          */
+/* Copyright (c) 2013 Scott C. Livingston                                 */
 /*                                                                        */
 /* This program is free software; you can redistribute it and/or modify   */
 /* it under the terms of the GNU General Public License as published by   */
@@ -31,6 +33,9 @@
 /* Written by Gerard J. Holzmann, Bell Laboratories, U.S.A.               */
 
 #include "ltl2ba.h"
+
+/* Confer OUT_TYPE_... definitions in ltl2ba.h */
+byte output_format = OUT_TYPE_SPIN;
 
 FILE	*tl_out;
 
@@ -115,6 +120,9 @@ usage(void)
 {
         printf("usage: ltl2ba [-flag] -f formula\n");
         printf("                   or -F file\n");
+		printf(" -h\t\tthis help message\n");
+		printf(" -V\t\tprint version and exit\n");
+		printf(" -t type\toutput format; default is \"spin\"; can be one of the following:\n\t\tspin, dot\n");
         printf(" -f \"formula\"\ttranslate LTL ");
         printf("into never claim\n");
         printf(" -F file\tlike -f, but with the LTL ");
@@ -173,7 +181,31 @@ main(int argc, char *argv[])
                 case 'l': tl_simp_log = 0; break;
                 case 'd': tl_verbose = 1; break;
                 case 's': tl_stats = 1; break;
-                default : usage(); break;
+                case 'h': usage(); break;
+                case 'V':
+					printf( "ltl2gba version 1.2-scl\n" );
+					return 0;
+
+                case 't':
+					if (argc <= 1) {
+						fprintf( stderr, "Incorrect use of \"-t\" flag.  Try \"-h\".\n" );
+						return 1;
+					}
+					argc--;
+					argv++;
+					if (!strncmp( argv[1], "spin", 4 )) {
+						output_format = OUT_TYPE_SPIN;
+					} else if (!strncmp( argv[1], "dot", 3 )) {
+						output_format = OUT_TYPE_DOT;
+					} else {
+						fprintf( stderr, "Incorrect use of \"-t\" flag.  Try \"-h\".\n" );
+						return 1;
+					}
+					break;
+
+                default :
+					fprintf( stderr, "Unrecognized option \"%s\".  Try \"-h\".\n", argv[1] );
+					return 1;
                 }
                 argc--, argv++;
         }
